@@ -84,7 +84,7 @@ end
 
 function ENT:AddSounds()
 	self.Sound={
-		Start=CreateSound(self.Entity,"wac/an32/Start.wav"),
+		Start=CreateSound(self.Entity,"wac/dh98/Start.wav"),
 		Blades=CreateSound(self.Entity,"DH98.External"),
 		Engine=CreateSound(self.Entity,"DH98.Internal"),
 		MissileAlert=CreateSound(self.Entity,""),
