@@ -30,15 +30,17 @@ ENT.Aerodynamics = {
 	Rail = Vector(1, 5, 20)
 }
 
-function ENT:CustomPhysicsUpdate(ph)
+function ENT:PhysicsUpdate(ph)
+	self:base("wac_pl_base").PhysicsUpdate(self,ph)
+
 	if not IsValid(self) or not IsValid(self:GetPhysicsObject()) then return end
 
-	if self.rotorRpm > 0.5 and self.rotorRpm < 0.89 and IsValid(self.TopRotorModel) then
-		self.TopRotorModel:SetBodygroup(1,2)
-	elseif self.rotorRpm > 0.9 and IsValid(self.TopRotorModel) then
-		self.TopRotorModel:SetBodygroup(1,2)
-	elseif self.rotorRpm < 0.8 and IsValid(self.TopRotorModel) then
-		self.TopRotorModel:SetBodygroup(1,1)
+	if self.rotorRpm > 0.5 and self.rotorRpm < 0.89 and IsValid(self.rotorModel) then
+		self.rotorModel:SetBodygroup(1,2)
+	elseif self.rotorRpm > 0.9 and IsValid(self.rotorModel) then
+		self.rotorModel:SetBodygroup(1,2)
+	elseif self.rotorRpm < 0.8 and IsValid(self.rotorModel) then
+		self.rotorModel:SetBodygroup(1,1)
 	end
 	
 	local geardown,t1=self:LookupSequence("geardown")
@@ -46,24 +48,24 @@ function ENT:CustomPhysicsUpdate(ph)
 	local trace=util.QuickTrace(self:LocalToWorld(Vector(0,0,62)), self:LocalToWorld(Vector(0,0,50)), {self, self.Wheels[1], self.Wheels[2], self.Wheels[3], self.TopRotor})
 	local phys=self:GetPhysicsObject()
 	if IsValid(phys) and not self.disabled then
-		if self.upMul>0.9 and self.rotorRpm>0.8 and phys:GetVelocity():Length() > 1299 and trace.HitPos:Distance( self:LocalToWorld(Vector(0,0,62)) ) > 50  and self:GetSequence() != gearup then
+		if self.controls.throttle>0.9 and self.rotorRpm>0.8 and phys:GetVelocity():Length() > 1299 and trace.HitPos:Distance( self:LocalToWorld(Vector(0,0,62)) ) > 50  and self:GetSequence() != gearup then
 			self:ResetSequence(gearup) 
 			self:SetPlaybackRate(1.0)
 			self:SetBodygroup(2,1)
 			for i=1,3 do 
-				self.Wheels[i]:SetRenderMode(RENDERMODE_TRANSALPHA)
-				self.Wheels[i]:SetColor(Color(255,255,255,0))
-				self.Wheels[i]:SetSolid(SOLID_NONE)
+				self.wheels[i]:SetRenderMode(RENDERMODE_TRANSALPHA)
+				self.wheels[i]:SetColor(Color(255,255,255,0))
+				self.wheels[i]:SetSolid(SOLID_NONE)
 			end
-		elseif self.upMul<0.6 and trace.HitPos:Distance( self:LocalToWorld(Vector(0,0,62)) ) > 50  and self:GetSequence() == gearup then
+		elseif self.controls.throttle<0.6 and trace.HitPos:Distance( self:LocalToWorld(Vector(0,0,62)) ) > 50  and self:GetSequence() == gearup then
 			self:ResetSequence(geardown)
 			self:SetPlaybackRate(1.0)
 			timer.Simple(t1,function()
-				if self.Wheels then
+				if self.wheels then
 					for i=1,3 do
-						self.Wheels[i]:SetRenderMode(RENDERMODE_NORMAL)
-						self.Wheels[i]:SetColor(Color(255,255,255,255))
-						self.Wheels[i]:SetSolid(SOLID_VPHYSICS)
+						self.wheels[i]:SetRenderMode(RENDERMODE_NORMAL)
+						self.wheels[i]:SetColor(Color(255,255,255,255))
+						self.wheels[i]:SetSolid(SOLID_VPHYSICS)
 					end
 					self:SetBodygroup(2,0)
 				end
@@ -108,57 +110,9 @@ function ENT:CustomPhysicsUpdate(ph)
 		self:AddOnRemove(self.backgib.fire)
 	end
 	
-	if self.Active then
+	if self.active then
 		self:SetBodygroup(3,0)
 	else
 		self:SetBodygroup(3,1)
-	end
-end
-
-
-function ENT:AddRotor()
-	self.TopRotor = ents.Create("prop_physics")
-	self.TopRotor:SetModel("models/props_junk/sawblade001a.mdl")
-	self.TopRotor:SetPos(self:LocalToWorld(self.TopRotorPos))
-	self.TopRotor:SetAngles(self:GetAngles() + Angle(90, 0, 0))
-	self.TopRotor:SetOwner(self.Owner)
-	self.TopRotor:Spawn()
-	self.TopRotor:SetNotSolid(true)
-	self.TopRotor.Phys = self.TopRotor:GetPhysicsObject()
-	self.TopRotor.Phys:EnableGravity(false)
-	self.TopRotor.Phys:SetMass(5)
-	--self.TopRotor.Phys:EnableDrag(false)
-	self.TopRotor:SetNoDraw(true)
-	self.TopRotor.fHealth = 100
-	self.TopRotor.wac_ignore = true
-	if self.RotorModel then
-		local e = ents.Create("wac_hitdetector")
-		e:SetModel(self.RotorModel)
-		e:SetPos(self:LocalToWorld(self.TopRotorPos))
-		e:SetAngles(self:GetAngles())
-		e:Spawn()
-		e:SetNotSolid(true)
-		e:SetOwner(self.Owner)
-		e:SetParent(self.TopRotor)
-		e.wac_ignore = true
-		local obb=e:OBBMaxs()
-		self.RotorWidth=(obb.x>obb.y and obb.x or obb.y)
-		self.RotorHeight=obb.z
-		self.TopRotorModel=e
-		self:AddOnRemove(e)
-	end
-	constraint.Axis(self.Entity, self.TopRotor, 0, 0, self.TopRotorPos, Vector(0,0,1), 0,0,0.01,1)
-	self:AddOnRemove(self.TopRotor)
-
-	if self.EngineWeight then
-		local e = ents.Create("prop_physics")
-		e:SetModel("models/props_junk/PopCan01a.mdl")
-		e:SetPos(self:LocalToWorld(self.TopRotorPos))
-		e:Spawn()
-		e:SetNotSolid(true)
-		e:GetPhysicsObject():SetMass(self.EngineWeight.Weight)
-		constraint.Weld(self.Entity, e)
-		self:AddOnRemove(e)
-		self.EngineWeight.Entity = e
 	end
 end

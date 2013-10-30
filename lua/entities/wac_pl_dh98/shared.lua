@@ -27,11 +27,9 @@ end
 
 ENT.Weight			= 16225
 ENT.EngineForce		= 450
-ENT.TopRotorPos 	= Vector(283.6,-180,9)
+ENT.rotorPos 	= Vector(283.6,-180,9)
 
-ENT.AngBrakeMul		= 0.055
-
-ENT.WheelInfo={
+ENT.Wheels={
 	{
 		mdl="models/chippy/dh98/fwheel.mdl",
 		pos=Vector(138,-180,-120),
@@ -52,48 +50,32 @@ ENT.WheelInfo={
 	},
 }
 
-function ENT:AddSeatTable()
-	return {
-		[1]={
-			Pos=Vector(175,16,25),
-			ExitPos=Vector(372.79,0,9),
-			NoHud=true,
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-			},
-		},
-		[2]={
-			Pos=Vector(155,-24,20),
-			ExitPos=Vector(372.79,0,14),
-			NoHud=true,
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-			},
-		},
-		[3]={
-			Pos=Vector(270,-27,-9),
-			Ang=Angle(0,90,0),
-			ExitPos=Vector(372.79,0,14),
-			NoHud=true,
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-			},
-		},
-	}
-end
+ENT.Seats = {
+	{
+		pos=Vector(175,16,25),
+		exit=Vector(372.79,0,9),
+	},
+	{
+		pos=Vector(155,-24,20),
+		exit=Vector(372.79,0,14),
+	},
+	{
+		pos=Vector(270,-27,-9),
+		ang=Angle(0,90,0),
+		exit=Vector(372.79,0,14),
+	},
+}
 
-function ENT:AddSounds()
-	self.Sound={
-		Start=CreateSound(self.Entity,"wac/dh98/Start.wav"),
-		Blades=CreateSound(self.Entity,"DH98.External"),
-		Engine=CreateSound(self.Entity,"DH98.Internal"),
-		MissileAlert=CreateSound(self.Entity,""),
-		MissileShoot=CreateSound(self.Entity,""),
-		MinorAlarm=CreateSound(self.Entity,""),
-		LowHealth=CreateSound(self.Entity,""),
-		CrashAlarm=CreateSound(self.Entity,""),
-	}
-end
+ENT.Sounds={
+	Start="wac/dh98/start.wav",
+	Blades="wac/dh98/external.wav",
+	Engine="wac/dh98/internal.wav",
+	MissileAlert="",
+	MissileShoot="",
+	MinorAlarm="",
+	LowHealth="",
+	CrashAlarm="",
+}
 
 function ENT:DrawPilotHud() end
 function ENT:DrawWeaponSelection() end
