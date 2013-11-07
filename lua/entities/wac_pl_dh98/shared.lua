@@ -29,6 +29,10 @@ ENT.Weight			= 16225
 ENT.EngineForce		= 450
 ENT.rotorPos 	= Vector(283.6,-180,9)
 
+ENT.Agility = {
+	Thrust = 10
+}
+
 ENT.Wheels={
 	{
 		mdl="models/chippy/dh98/fwheel.mdl",
