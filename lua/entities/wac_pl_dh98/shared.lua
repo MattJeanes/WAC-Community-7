@@ -17,7 +17,7 @@ ENT.SmokePos		= ENT.FirePos
 ENT.AutomaticFrameAdvance = true
 
 ENT.OtherRotorPos = Vector(283.6,176,9)
-ENT.OtherRotorDir = 1
+ENT.OtherRotorDir = -1
 
 if CLIENT then
 	ENT.thirdPerson = {

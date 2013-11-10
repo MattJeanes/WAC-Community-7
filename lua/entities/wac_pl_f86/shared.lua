@@ -64,12 +64,12 @@ ENT.Weapons = {
 		class = "wac_pod_gatling",
 		info = {
 			Pods = {
-				Vector(160,25,28),
-				Vector(160,25,20),
-				Vector(160,25,11),
-				Vector(160,-25,28),
-				Vector(160,-25,20),
-				Vector(160,-25,11),
+				Vector(140,20,28),
+				Vector(140,20,20),
+				Vector(140,20,11),
+				Vector(140,-20,28),
+				Vector(140,-20,20),
+				Vector(140,-20,11),
 			},
 			FireRate = 500,
 			Sequential = true,
