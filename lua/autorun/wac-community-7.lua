@@ -33,4 +33,4 @@ end)
 
 if not found then return end
 
-if wac and wac.aircraft then wac.aircraft.spawnCategoryU = "WAC Unbreakable" end
+if wac and wac.aircraft then wac.aircraft.spawnCategoryC = "WAC Community" end

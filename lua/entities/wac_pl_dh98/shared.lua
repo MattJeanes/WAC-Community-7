@@ -1,7 +1,7 @@
 if not wac then return end
 ENT.Base = "wac_pl_base"
 ENT.Type = "anim"
-ENT.Category = wac.aircraft.spawnCategory
+ENT.Category = wac.aircraft.spawnCategoryC
 ENT.Spawnable = true
 ENT.AdminSpawnable = true
 
@@ -67,7 +67,24 @@ ENT.Seats = {
 		pos=Vector(270,-27,-9),
 		ang=Angle(0,90,0),
 		exit=Vector(372.79,0,14),
+		weapons={"Bomb"},
 	},
+}
+
+ENT.Weapons = {
+	["Bomb"] = {
+		class = "wac_pod_bomb",
+		info = {
+			Pods = {
+				Vector(40,-22,-30),
+				Vector(40,17,-30),
+			},
+			model="models/props_phx/torpedo.mdl",
+			reload=2,
+			mass=400,
+			mode=false,
+		}
+	}
 }
 
 ENT.Sounds={
